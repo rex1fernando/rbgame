@@ -10,6 +10,7 @@ import Graphics.UI.SDL.Primitives
 import Data.IORef
 import Data.Time.Clock
 
+import Time
  
 type GameNetworkDescription t
     =  Event t ()      -- ^ physics timer
@@ -77,14 +78,4 @@ gameLoop dt maximalFps gameNetwork = do
             go clock acc2 new fireInput firePhysics fireGraphics
 
 
-type Duration = NominalDiffTime
-type Time     = NominalDiffTime
-
--- timing helpers
-ms :: NominalDiffTime
-ms = 1
-fps :: Integer
-fps  = 90                     -- physics framerate
-dt :: NominalDiffTime
-dt   = (1.0 / (fromIntegral fps)) * ms  -- physics timestep
  
