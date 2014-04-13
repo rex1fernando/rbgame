@@ -27,7 +27,7 @@ import Input
 
  
 main = SDL.withInit [SDL.InitEverything] $ do
-      screen <- SDL.setVideoMode 800 600 32 [SDL.SWSurface]
+      screen <- SDL.setVideoMode 1920 1080 32 [SDL.SWSurface]
       gameLoop dt (fromIntegral fps) (gameNetwork screen)
       return ()
    

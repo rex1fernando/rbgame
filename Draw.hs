@@ -16,14 +16,16 @@ draw :: SDL.Surface -> GameState -> IO ()
 draw screen state = do
   let (x,y) = playerPos state
 
+  black <- (SDL.mapRGB . SDL.surfaceGetPixelFormat) screen 0 0 0 
+  white <- (SDL.mapRGB . SDL.surfaceGetPixelFormat) screen 255 255 255 
   white <- (SDL.mapRGB . SDL.surfaceGetPixelFormat) screen 255 255 255 
   blue <- (SDL.mapRGB . SDL.surfaceGetPixelFormat) screen 0 50 200
 
-  SDL.fillRect screen Nothing white
-  SDL.fillRect screen (Just $ SDL.Rect (round x) (round y) 50 50) blue
+  SDL.fillRect screen Nothing black
+  SDL.fillRect screen (Just $ SDL.Rect (round x) (round y) 50 50) white
   
   aaPolygon screen [(300,300), (320,300),
-                    (320,320), (300,320)] blue
+                    (320,320), (300,320)] white
 
   SDL.flip screen
   
