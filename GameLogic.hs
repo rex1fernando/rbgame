@@ -11,7 +11,7 @@ import Input
 gameLogic :: Event t Duration -> Behavior t ArrowKeys -> Behavior t GameState
 gameLogic dtE arrowKeysB = GameState <$> pos
   where
-    accel = (vmult 200) <$> arrowKeysB
+    accel = (vmult 500) <$> arrowKeysB
 
     zero = (0,0) :: Pos
     (_, vel) = integral zero accel dtE
