@@ -30,6 +30,7 @@ gameLoop dt maximalFps gameNetwork = do
     (ahPhysics , firePhysics)  <- newAddHandler
     (ahGraphics, fireGraphics) <- newAddHandler
     clock <- newIORef 0
+    lastGo <- newIORef 0
     
     network <- compile $ do
         eInput    <- fromAddHandler ahInput
@@ -42,10 +43,10 @@ gameLoop dt maximalFps gameNetwork = do
     
     -- game loop
     firstOld <- getPOSIXTime
-    go clock 0 firstOld fireInput firePhysics fireGraphics
+    go clock lastGo 0 firstOld fireInput firePhysics fireGraphics
     
     where
-    go clock acc old fireInput firePhysics fireGraphics = do
+    go clock lastGo acc old fireInput firePhysics fireGraphics = do
         -- acc  accumulates excess time (usually < dt)
         -- old  keeps track of the time of the previous iteration of the game loop
         input <- SDL.pollEvent
@@ -65,7 +66,20 @@ gameLoop dt maximalFps gameNetwork = do
  
             -- no need to hog all the CPU
             -- FIXME: something with maximalFPS
-            SDL.delay $ round $ dt*(fromIntegral 1000)
+            currTicks <- SDL.getTicks
+            lastGoTicks <- readIORef lastGo
+            let ticksDiff = currTicks - lastGoTicks
+
+
+            let timeStepMilli = round $ dt*(fromIntegral 1000)
+            --putStrLn $ show (timeStepMilli - ticksDiff)
+
+            if (ticksDiff < timeStepMilli)
+              then SDL.delay $ timeStepMilli - ticksDiff
+              else return ()
+            
+            writeIORef lastGo currTicks
+
  
             -- graphics
             -- note: time might *not* be multiple of dt, for interpolation
@@ -75,7 +89,8 @@ gameLoop dt maximalFps gameNetwork = do
             fireGraphics ()                 -- interpolate graphics
             writeIORef  clock tempclock     -- reset clock to multiple of dt
  
-            go clock acc2 new fireInput firePhysics fireGraphics
+
+            go clock lastGo acc2 new fireInput firePhysics fireGraphics
 
 
  

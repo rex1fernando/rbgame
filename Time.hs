@@ -21,6 +21,6 @@ delta (x,y) = y-x
 ms :: NominalDiffTime
 ms = 1
 fps :: Integer
-fps  = 90                     -- physics framerate
+fps  = 150                     -- physics framerate
 dt :: NominalDiffTime
 dt   = (1.0 / (fromIntegral fps)) * ms  -- physics timestep
