@@ -35,3 +35,18 @@ integral c b dt = mapAccum c deltaAccumulator
     deltaMult = (flip vmult) <$> b
     addDummy x y = ((),x `vadd` y)
 
+integralB :: (Vector a) => a -> Behavior t a -> Event t Duration -> Behavior t a
+integralB c b dt = accumB c deltaAccumulator
+  where
+    dtd = realToFrac <$> dt
+    deltaAccumulator = vadd <$> (deltaMult <@> dtd)
+    deltaMult = (flip vmult) <$> b
+
+integralVSP :: (Vector a) => Event t a -> Behavior t a -> Event t Duration -> (Event t (), Behavior t a)
+integralVSP start b dt = mapAccum vzero deltaAccumulator
+  where
+    dtd = realToFrac <$> dt
+    deltaAccumulator = union (addDummy <$> (deltaMult <@> dtd))  ((\x y -> ((),x)) <$> start)
+    deltaMult = (flip vmult) <$> b
+    addDummy x y = ((),x `vadd` y)
+
